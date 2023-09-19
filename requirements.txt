@@ -1,0 +1,9 @@
+click==8.0.1
+multithread-parallel-processing==1.0.0
+psycopg2
+python-dotenv==0.19.2
+python-cli-scheduler
+pymongo==4.3.3
+pytz
+SQLAlchemy~=1.4.46
+pandas

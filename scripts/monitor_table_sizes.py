@@ -9,9 +9,9 @@ from constants.time_constants import TimeConstants
 from databases.postgresql import PostgresDB
 from utils.time_utils import human_readable_date, round_timestamp
 
-# DIR_PATH = 'data'
+DIR_PATH = 'data'
 #DIR_PATH = '../data'
-DIR_PATH = '/home/xuantung/Tovchain/'
+# DIR_PATH = '/home/xuantung/Tovchain/'
 
 
 def monitor_table_sizes(schema: str):
@@ -47,9 +47,23 @@ def monitor_table_sizes(schema: str):
     schema_df.to_csv(FILE_PATH)
 
 
-# class MonitorTablesJob(s)
+class MonitorTablesJob(SchedulerJob):
+    def __init__(self, run_now, interval, delay):
+        scheduler = f"^{run_now}@{interval}/{delay}#true"
+        super().__init__(scheduler)
+
+    def _pre_start(self):
+        self.postgres = PostgresDB()
+        self.schemas = ['chain_0x38', 'chain_0x1', 'chain_0xfa', 'chain_0x89',
+                        'chain_0xa', 'chain_0xa4b1', 'chain_0xa86a']
+
+    def _execute(self):
+        for schema in self.schemas:
+            monitor_table_sizes(schema)
+
 
 if __name__ == '__main__':
-    schemas = ['chain_0x38', 'chain_0x1', 'chain_0xfa', 'chain_0x89', 'chain_0xa', 'chain_0xa4b1', 'chain_0xa86a']
-    for schema in schemas:
-        monitor_table_sizes(schema)
+    job = MonitorTablesJob(run_now=True,
+                           interval=TimeConstants.A_DAY,
+                           delay=TimeConstants.A_HOUR*2)
+    job.run()

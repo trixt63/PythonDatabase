@@ -164,5 +164,5 @@ last_synced.txt
 /last_synced_pair_id.txt
 
 # Test folders
-.data/
+data/
 tests/

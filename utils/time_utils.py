@@ -159,5 +159,9 @@ def human_readable_time(timestamp, utc=False):
         t = datetime.fromtimestamp(timestamp, tz=pytz.utc)
     else:
         t = datetime.fromtimestamp(timestamp)
-
     return t.strftime('%m-%d-%Y %H:%M:%S %Z')
+
+
+def human_readable_date(timestamp):
+    t = datetime.fromtimestamp(timestamp)
+    return t.strftime('%Y/%m/%d')

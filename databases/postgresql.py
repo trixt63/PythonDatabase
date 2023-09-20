@@ -19,7 +19,6 @@ class PostgresDB:
 
     def close(self):
         self.session.close()
-        pass
 
     def get_all_schemas(self):
         schemas = self.session.execute("""
@@ -38,12 +37,26 @@ class PostgresDB:
         return [table['table_name'] for table in tables]
 
     ###################################
+    #            Monitoring           #
+    ###################################
+    def get_tables_size(self, schema: str) -> dict:
+        query = f"""
+            SELECT table_name,
+                   pg_size_pretty(pg_relation_size(concat('chain_0x38.', table_name)))
+            FROM information_schema.tables
+            WHERE table_schema = '{schema}'
+            ORDER by table_name"""
+        cursor = self.session.execute(query)
+        self.session.commit()
+        return {row['table_name']: row['pg_size_pretty'] for row in cursor}
+
+    ###################################
     #      Wallet Address Table       #
     ###################################
 
     def query_on_all_chains(self, schemas: List = None):
         if not schemas:
-            schemas = [schema for schema in self.get_all_schemas() if schema[:5] == 'chain']
+            schemas = [schema for schema in self.get_all_schemas() if schema.startWith('chain')]
         for schema in schemas:
             query = f"""
                 select {schema}.smart_contract

@@ -42,7 +42,7 @@ class PostgresDB:
     def get_tables_size(self, schema: str) -> dict:
         query = f"""
             SELECT table_name,
-                   pg_size_pretty(pg_relation_size(concat('{schema}.', table_name)))
+                   pg_size_pretty(pg_total_relation_size(concat('{schema}.', table_name)))
             FROM information_schema.tables
             WHERE table_schema = '{schema}'
             ORDER by table_name"""

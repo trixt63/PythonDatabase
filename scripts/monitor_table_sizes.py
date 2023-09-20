@@ -3,6 +3,7 @@ import sys
 sys.path.append(os.path.dirname(sys.path[0]))
 import time
 import pandas as pd
+from cli_scheduler.scheduler_job import SchedulerJob
 
 from constants.time_constants import TimeConstants
 from databases.postgresql import PostgresDB
@@ -46,5 +47,9 @@ def monitor_table_sizes(schema: str):
     schema_df.to_csv(FILE_PATH)
 
 
+# class MonitorTablesJob(s)
+
 if __name__ == '__main__':
-    monitor_table_sizes('chain_0x38')
+    schemas = ['chain_0x38', 'chain_0x1', 'chain_0xfa', 'chain_0x89', 'chain_0xa', 'chain_0xa4b1', 'chain_0xa86a']
+    for schema in schemas:
+        monitor_table_sizes(schema)

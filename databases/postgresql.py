@@ -39,7 +39,7 @@ class PostgresDB:
     ###################################
     #            Monitoring           #
     ###################################
-    def get_tables_size(self, schema: str) -> dict:
+    def get_tables_size(self, schema: str = 'public') -> dict:
         query = f"""
             SELECT table_name,
                    pg_size_pretty(pg_total_relation_size(concat('{schema}.', table_name)))
@@ -87,6 +87,7 @@ class PostgresDB:
 
 if __name__ == '__main__':
     pg = PostgresDB()
-    schemas = ['chain_0x38', 'chain_0x1', 'chain_0xfa', 'chain_0x89']
+    schemas = ['chain_0x38', 'chain_0x1', 'chain_0xfa', 'chain_0x89',
+               'chain_0xa', 'chain_0xa86a', 'chain_0xa4b1', 'chain_0x2b6653dc']
     username = 'community_detection'
-    pg.grant_select(schemas=schemas, tables=['token_transfer'], username=username)
+    pg.grant_select(schemas=schemas, tables=['token_transfer', 'token_decimals'], username=username)

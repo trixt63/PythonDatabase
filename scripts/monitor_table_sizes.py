@@ -55,7 +55,7 @@ class MonitorTablesJob(SchedulerJob):
     def _pre_start(self):
         self.postgres = PostgresDB()
         self.schemas = ['chain_0x38', 'chain_0x1', 'chain_0xfa', 'chain_0x89',
-                        'chain_0xa', 'chain_0xa4b1', 'chain_0xa86a']
+                        'chain_0xa', 'chain_0xa4b1', 'chain_0xa86a', 'chain_0x2b6653dc']
 
     def _execute(self):
         for schema in self.schemas:

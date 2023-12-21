@@ -74,9 +74,25 @@ class PostgresDB:
                 query += f"""
                     GRANT SELECT ON {schema}.{table} TO {username};
                 """
+            # self.session.execute(query)
+            # self.session.commit()
+            print(query)
+            # logger.info(f"Grant select on {schema}: {tables} for {username}")
+
+    def revoke_before_delete(self, schemas: List, tables: List, username):
+        for schema in schemas:
+            query = ""
+            for table in tables:
+                query += f"""
+                    REVOKE ALL PRIVILEGES ON {schema}.{table} FROM {username};
+                """
+            query += f"""
+                REVOKE ALL PRIVILEGES ON SCHEMA {schema} FROM {username};
+            """
             self.session.execute(query)
             self.session.commit()
-            logger.info(f"Grant select on {schema}: {tables} for {username}")
+            print(query)
+            # logger.info(f"Grant select on {schema}: {tables} for {username}")
 
     def grant_usage_schema(self, schema: str, username: str):
         q = f"GRANT USAGE ON SCHEMA {schema} TO {username}"
@@ -89,5 +105,6 @@ if __name__ == '__main__':
     pg = PostgresDB()
     schemas = ['chain_0x38', 'chain_0x1', 'chain_0xfa', 'chain_0x89',
                'chain_0xa', 'chain_0xa86a', 'chain_0xa4b1', 'chain_0x2b6653dc']
-    username = 'community_detection'
-    pg.grant_select(schemas=schemas, tables=['token_transfer', 'token_decimals'], username=username)
+    username = 'token_transfer_reader_2'
+    tables = ['token_transfer', 'token_decimals']
+    pg.revoke_before_delete(schemas=schemas, tables=tables, username=username)

@@ -9,8 +9,8 @@ from constants.time_constants import TimeConstants
 from databases.postgresql import PostgresDB
 from utils.time_utils import human_readable_date, round_timestamp
 
-DIR_PATH = 'data'
-N_DAYS = 93
+DIR_PATH = os.environ.get('DIR_PATH')
+N_DAYS = os.environ.get('N_DAYS')
 #DIR_PATH = '../data'
 # DIR_PATH = '/home/xuantung/Tovchain/'
 

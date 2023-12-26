@@ -10,7 +10,7 @@ from databases.postgresql import PostgresDB
 from utils.time_utils import human_readable_date, round_timestamp, human_readable_time
 
 DIR_PATH = os.environ.get('DIR_PATH')
-N_DAYS = 93
+# N_DAYS = 93
 
 
 def monitor_table_sizes(table_name: str):

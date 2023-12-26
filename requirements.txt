@@ -7,3 +7,4 @@ pymongo==4.3.3
 pytz
 SQLAlchemy~=1.4.46
 pandas
+python-dotenv

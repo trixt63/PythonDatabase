@@ -65,7 +65,21 @@ class PostgresDB:
             """
             cursor = session.execute(query)
         return {row['table_schema']: row['pg_size_pretty'] for row in cursor}
-
+    
+    @staticmethod
+    def get_tables_n_rows(table_name: str) -> dict:
+        with Session.begin() as session:
+            query = f"""SELECT 
+                        schemaname
+                        ,relname
+                        ,n_live_tup AS EstimatedCount 
+                    FROM pg_stat_user_tables 
+                    where relname = '{table_name}'
+                    ORDER BY n_live_tup DESC;"""
+            data = session.execute(query).all()
+        return {row['schemaname']: [row['estimatedcount']] for row in data}
+ 
+        
     ###################################
     #      Wallet Address Table       #
     ###################################

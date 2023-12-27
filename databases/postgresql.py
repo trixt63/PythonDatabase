@@ -52,22 +52,23 @@ class PostgresDB:
                 WHERE table_schema = '{schema}'
                 ORDER by table_name"""
             cursor = session.execute(query)
-        # return {row['table_name']: row['pg_size_pretty'] for row in cursor}
-        return {row['table_name']: row['pg_total_relation_size'] for row in cursor}
+        return {row['table_name']: row['pg_size_pretty'] for row in cursor}
 
     @staticmethod
     def get_tables_sizes_on_all_schema(table_name: str) -> dict:
         with Session.begin() as session:
             query = f"""
                 SELECT table_schema, table_name, 
-                	   pg_size_pretty(pg_total_relation_size(concat(table_schema, '.', table_name)))
+                	   pg_size_pretty(pg_total_relation_size(concat(table_schema, '.', table_name))), 
+                	   pg_total_relation_size(concat(table_schema, '.', table_name))
                 FROM information_schema.tables
                 WHERE table_name = '{table_name}'
                 ORDER by table_name
             """
             cursor = session.execute(query)
-        return {row['table_schema']: row['pg_size_pretty'] for row in cursor}
-    
+        # return {row['table_schema']: row['pg_size_pretty'] for row in cursor}
+        return {row['table_schema']: row['pg_total_relation_size'] for row in cursor}
+
     @staticmethod
     def get_tables_n_rows(table_name: str) -> dict:
         with Session.begin() as session:

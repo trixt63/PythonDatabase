@@ -52,7 +52,6 @@ class MonitorTablesJob(SchedulerJob):
 
 
 if __name__ == '__main__':
-    monitor_table_sizes('wrapped_token')
     tables = ['amount_in_out', 'dapp_interaction', 'smart_contract', 'token_decimals', 'token_transfer', 'wrapped_token']
     job = MonitorTablesJob(tables=tables,
                            run_now=True,

@@ -21,11 +21,22 @@ def monitor_token_by_schema(schema: str):
     time_deltas = list(range(0, N_DAYS + 1, 1))
 
     data = postgres.get_token(schema)
+    table_sizes_dict = {
+        'time': [human_readable_date(today)],
+    }
 
     for chain, chain_data in data.items():
+        chain_data['time'] = human_readable_date(today)
         df = pd.DataFrame([chain_data])
+        df.set_index(keys=['time'], inplace=True)
+
         file_name = f'{DIR_PATH}/{chain}_data.csv'
-        df.to_csv(file_name, index=False)
+        try:
+            existing_df = pd.read_csv(file_name, index_col='time')
+            existing_df = pd.concat([existing_df, df])
+        except FileNotFoundError:
+            existing_df = df
+        existing_df.to_csv(file_name)
 
 
 class MonitorTablesJob(SchedulerJob):

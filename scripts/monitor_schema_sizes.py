@@ -12,15 +12,15 @@ from utils.time_utils import human_readable_date, round_timestamp
 DIR_PATH = os.environ.get('DIR_PATH')
 N_DAYS = int(os.environ.get('N_DAYS'))
 #DIR_PATH = '../data'
-# DIR_PATH = '/home/xuantung/Tovchain/'
+#DIR_PATH = '/home/xuantung/Tovchain/'
 
 
-def monitor_token_by_schema(schema: str):
+def monitor_token_by_schema():
     postgres = PostgresDB()
     today = round_timestamp(int(time.time()))
     time_deltas = list(range(0, N_DAYS + 1, 1))
 
-    data = postgres.get_token(schema)
+    data = postgres.get_schema_size()
     table_sizes_dict = {
         'time': [human_readable_date(today)],
     }
@@ -50,7 +50,7 @@ class MonitorTablesJob(SchedulerJob):
 
     def _execute(self):
         for schema in self.schemas:
-            monitor_token_by_schema(schema)
+            monitor_token_by_schema()
 
 
 if __name__ == '__main__':

@@ -11,26 +11,24 @@ from utils.time_utils import human_readable_date, round_timestamp
 
 DIR_PATH = os.environ.get('DIR_PATH')
 N_DAYS = int(os.environ.get('N_DAYS'))
-#DIR_PATH = '../data'
+DIR_PATH = '../data/checks'
 #DIR_PATH = '/home/xuantung/Tovchain/'
 
 
-def monitor_token_by_schema():
+def monitor_detailed_table_size(table_name: str):
+    """Get detailed information (total size, index size, number of tuples, etc.) of a table on all schemas
+    """
     postgres = PostgresDB()
     today = round_timestamp(int(time.time()))
-    time_deltas = list(range(0, N_DAYS + 1, 1))
 
-    data = postgres.get_detailed_table()
-    table_sizes_dict = {
-        'time': [human_readable_date(today)],
-    }
+    data = postgres.get_detailed_table(table_name)
 
     for chain, chain_data in data.items():
         chain_data['time'] = human_readable_date(today)
         df = pd.DataFrame([chain_data])
         df.set_index(keys=['time'], inplace=True)
 
-        file_name = f'{DIR_PATH}/{chain}_data.csv'
+        file_name = f'{DIR_PATH}/{chain}_{table_name}.csv'
         try:
             existing_df = pd.read_csv(file_name, index_col='time')
             existing_df = pd.concat([existing_df, df])
@@ -46,11 +44,11 @@ class MonitorTablesJob(SchedulerJob):
 
     def _pre_start(self):
         self.postgres = PostgresDB()
-        self.schemas = ['chain_0x38']
 
     def _execute(self):
-        for schema in self.schemas:
-            monitor_token_by_schema()
+        table_names = ['token_transfer', 'dapp_interaction']
+        for _table_name in table_names:
+            monitor_detailed_table_size(_table_name)
 
 
 if __name__ == '__main__':

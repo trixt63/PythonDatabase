@@ -14,6 +14,7 @@ DIR_PATH = os.environ.get('DIR_PATH')
 
 
 def monitor_table_sizes(table_name: str):
+    """Get size of a table on all schemas"""
     postgres = PostgresDB()
     today = round_timestamp(int(time.time()))
 

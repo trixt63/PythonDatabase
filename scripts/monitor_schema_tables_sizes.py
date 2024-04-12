@@ -5,8 +5,8 @@ import time
 import pandas as pd
 from cli_scheduler.scheduler_job import SchedulerJob
 
-from constants.time_constants import TimeConstants
 from databases.postgresql import PostgresDB
+from constants.time_constants import TimeConstants
 from utils.time_utils import human_readable_date, round_timestamp
 
 DIR_PATH = os.environ.get('DIR_PATH')

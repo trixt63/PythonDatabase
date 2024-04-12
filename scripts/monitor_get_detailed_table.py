@@ -20,7 +20,7 @@ def monitor_token_by_schema():
     today = round_timestamp(int(time.time()))
     time_deltas = list(range(0, N_DAYS + 1, 1))
 
-    data = postgres.get_schema_size()
+    data = postgres.get_detailed_table()
     table_sizes_dict = {
         'time': [human_readable_date(today)],
     }

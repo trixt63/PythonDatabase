@@ -1,6 +1,7 @@
 from sqlalchemy import create_engine, inspect
 from sqlalchemy.engine.reflection import Inspector
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.sql import text
 from typing import List
 
 from config import PostgresDBConfig
@@ -55,6 +56,44 @@ class PostgresDB:
         return {row['table_name']: row['pg_size_pretty'] for row in cursor}
 
     @staticmethod
+    def get_detailed_table() -> dict:
+        with Session.begin() as session:
+            query = f"""
+                SELECT t2.table_name, t2.table_schema, 
+                    t2.total_size as total_size, t2.data_size as data_size, t2.index_size as index_size, 
+                    t1.n_live_tup as n_live_tup, t1.n_tup_ins as n_tup_ins, t1.n_tup_del as n_tup_del
+                FROM 
+                    (SELECT schemaname, relname, 
+                     n_tup_ins, n_tup_del, n_live_tup
+                     FROM pg_stat_user_tables 
+                     where relname = 'token_transfer'
+                     ORDER BY n_live_tup DESC) as t1
+                JOIN (SELECT 
+                        table_name,
+                        table_schema,
+                        pg_total_relation_size(concat(table_schema, '.token_transfer')) AS total_size,
+                        pg_relation_size(concat(table_schema, '.token_transfer')) AS data_size,
+                        pg_indexes_size(concat(table_schema, '.token_transfer')) AS index_size
+                      FROM information_schema.tables
+                      WHERE table_name = 'token_transfer'
+                      ORDER by table_name
+                ) as t2
+                on t1.schemaname = t2.table_schema"""
+            cursor = session.execute(query)
+            _returned_data = {row['table_schema']: {
+                'table_name': row['table_name'],
+                'total_size': row['total_size'],
+                'data_size': row['data_size'],
+                'index_size': row['index_size'],
+                'n_live_tup': row['n_live_tup'],
+                'n_tup_ins': row['n_tup_ins'],
+                'n_tup_del': row['n_tup_del']
+            } for row in cursor}
+        # for row in cursor:
+            print(_returned_data)
+        return _returned_data
+
+    @staticmethod
     def get_tables_sizes_on_all_schema(table_name: str) -> dict:
         with Session.begin() as session:
             query = f"""
@@ -81,8 +120,8 @@ class PostgresDB:
                     ORDER BY n_live_tup DESC;"""
             data = session.execute(query).all()
         return {row['schemaname']: [row['estimatedcount']] for row in data}
- 
-        
+
+
     ###################################
     #      Wallet Address Table       #
     ###################################
@@ -130,5 +169,3 @@ if __name__ == '__main__':
     schemas_ = ['chain_0x38', 'chain_0x1', 'chain_0xfa', 'chain_0x89',
                 'chain_0xa', 'chain_0xa86a', 'chain_0xa4b1', 'chain_0x2b6653dc']
     username_ = 'token_transfer_reader_2'
-    tables_ = ['token_transfer', 'token_decimals']
-    pg.revoke_before_delete(schemas=schemas_, tables=tables_, username=username_)

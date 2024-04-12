@@ -11,7 +11,7 @@ from utils.time_utils import human_readable_date, round_timestamp
 
 DIR_PATH = os.environ.get('DIR_PATH')
 N_DAYS = int(os.environ.get('N_DAYS'))
-DIR_PATH = '../data/checks'
+# DIR_PATH = '../data/checks'
 #DIR_PATH = '/home/xuantung/Tovchain/'
 
 

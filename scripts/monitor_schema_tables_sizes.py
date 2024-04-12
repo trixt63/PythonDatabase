@@ -16,6 +16,7 @@ N_DAYS = int(os.environ.get('N_DAYS'))
 
 
 def monitor_table_sizes_by_schema(schema: str):
+    """Get size of all tables in a schema"""
     postgres = PostgresDB()
     today = round_timestamp(int(time.time()))
     time_deltas = list(range(0, N_DAYS + 1, 1))

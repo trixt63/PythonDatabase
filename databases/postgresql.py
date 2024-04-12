@@ -56,7 +56,7 @@ class PostgresDB:
         return {row['table_name']: row['pg_size_pretty'] for row in cursor}
 
     @staticmethod
-    def get_detailed_table() -> dict:
+    def get_detailed_table(table_name: str) -> dict:
         with Session.begin() as session:
             query = f"""
                 SELECT t2.table_name, t2.table_schema, 
@@ -66,16 +66,16 @@ class PostgresDB:
                     (SELECT schemaname, relname, 
                      n_tup_ins, n_tup_del, n_live_tup
                      FROM pg_stat_user_tables 
-                     where relname = 'token_transfer'
+                     where relname = '{table_name}'
                      ORDER BY n_live_tup DESC) as t1
                 JOIN (SELECT 
                         table_name,
                         table_schema,
-                        pg_total_relation_size(concat(table_schema, '.token_transfer')) AS total_size,
-                        pg_relation_size(concat(table_schema, '.token_transfer')) AS data_size,
-                        pg_indexes_size(concat(table_schema, '.token_transfer')) AS index_size
+                        pg_total_relation_size(concat(table_schema, '.{table_name}')) AS total_size,
+                        pg_relation_size(concat(table_schema, '.{table_name}')) AS data_size,
+                        pg_indexes_size(concat(table_schema, '.{table_name}')) AS index_size
                       FROM information_schema.tables
-                      WHERE table_name = 'token_transfer'
+                      WHERE table_name = '{table_name}'
                       ORDER by table_name
                 ) as t2
                 on t1.schemaname = t2.table_schema"""
@@ -89,8 +89,6 @@ class PostgresDB:
                 'n_tup_ins': row['n_tup_ins'],
                 'n_tup_del': row['n_tup_del']
             } for row in cursor}
-        # for row in cursor:
-            print(_returned_data)
         return _returned_data
 
     @staticmethod

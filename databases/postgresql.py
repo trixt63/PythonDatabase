@@ -121,7 +121,6 @@ class PostgresDB:
             data = session.execute(query).all()
         return {row['schemaname']: [row['estimatedcount']] for row in data}
 
-
     ###################################
     #      Wallet Address Table       #
     ###################################

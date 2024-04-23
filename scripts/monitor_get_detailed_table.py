@@ -54,5 +54,5 @@ class MonitorTablesJob(SchedulerJob):
 if __name__ == '__main__':
     job = MonitorTablesJob(run_now=True,
                            interval=TimeConstants.A_DAY,
-                           delay=TimeConstants.A_HOUR*2)
+                           delay=TimeConstants.A_HOUR*2.75)
     job.run()

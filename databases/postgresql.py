@@ -6,6 +6,7 @@ from typing import List
 
 from config import PostgresDBConfig
 from utils.logger_utils import get_logger
+from utils.retry_handler import retry_handler
 
 logger = get_logger('PostgreSQL')
 

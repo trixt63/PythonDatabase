@@ -6,16 +6,14 @@ import pandas as pd
 from cli_scheduler.scheduler_job import SchedulerJob
 
 from databases.postgresql import PostgresDB
-from constants.time_constants import TimeConstants
+from constants.time_constants import TimeConstants, MonitorConstants
 from utils.time_utils import human_readable_date, round_timestamp
 
 DIR_PATH = os.environ.get('DIR_PATH')
 N_DAYS = int(os.environ.get('N_DAYS'))
-#DIR_PATH = '../data'
-# DIR_PATH = '/home/xuantung/Tovchain/'
 
 
-def monitor_table_sizes_by_schema(schema: str):
+def monitor_schema_tables_sizes(schema: str):
     """Get size of all tables in a schema"""
     postgres = PostgresDB()
     today = round_timestamp(int(time.time()))
@@ -49,7 +47,7 @@ def monitor_table_sizes_by_schema(schema: str):
     schema_df.to_csv(file_path)
 
 
-class MonitorTablesJob(SchedulerJob):
+class MonitorSchemasJob(SchedulerJob):
     def __init__(self, run_now, interval, delay):
         scheduler = f"^{run_now}@{interval}/{delay}#true"
         super().__init__(scheduler)
@@ -61,11 +59,11 @@ class MonitorTablesJob(SchedulerJob):
 
     def _execute(self):
         for schema in self.schemas:
-            monitor_table_sizes_by_schema(schema)
+            monitor_schema_tables_sizes(schema)
 
 
 if __name__ == '__main__':
-    job = MonitorTablesJob(run_now=True,
-                           interval=TimeConstants.A_DAY,
-                           delay=TimeConstants.A_HOUR*2)
+    job = MonitorSchemasJob(run_now=True,
+                            interval=TimeConstants.A_DAY,
+                            delay=MonitorConstants.DELAY)
     job.run()

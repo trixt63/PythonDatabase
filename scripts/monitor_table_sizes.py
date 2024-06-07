@@ -5,12 +5,11 @@ import time
 import pandas as pd
 from cli_scheduler.scheduler_job import SchedulerJob
 
-from constants.time_constants import TimeConstants
+from constants.time_constants import TimeConstants, MonitorConstants
 from databases.postgresql import PostgresDB
 from utils.time_utils import human_readable_date, round_timestamp, human_readable_time
 
 DIR_PATH = os.environ.get('DIR_PATH')
-# N_DAYS = 93
 
 
 def monitor_table_sizes(table_name: str):
@@ -57,5 +56,5 @@ if __name__ == '__main__':
     job = MonitorTablesJob(tables=tables,
                            run_now=True,
                            interval=TimeConstants.A_DAY,
-                           delay=TimeConstants.A_HOUR*2)
+                           delay=MonitorConstants.DELAY)
     job.run()

@@ -5,14 +5,12 @@ import time
 import pandas as pd
 from cli_scheduler.scheduler_job import SchedulerJob
 
-from constants.time_constants import TimeConstants
+from constants.time_constants import TimeConstants, MonitorConstants
 from databases.postgresql import PostgresDB
 from utils.time_utils import human_readable_date, round_timestamp
 
 DIR_PATH = os.environ.get('DIR_PATH')
 N_DAYS = int(os.environ.get('N_DAYS'))
-# DIR_PATH = '../data/checks'
-#DIR_PATH = '/home/xuantung/Tovchain/'
 
 
 def monitor_detailed_table_size(table_name: str):
@@ -37,7 +35,7 @@ def monitor_detailed_table_size(table_name: str):
         existing_df.to_csv(file_name)
 
 
-class MonitorTablesJob(SchedulerJob):
+class MonitorTablesDetailsJob(SchedulerJob):
     def __init__(self, run_now, interval, delay):
         scheduler = f"^{run_now}@{interval}/{delay}#true"
         super().__init__(scheduler)
@@ -52,7 +50,7 @@ class MonitorTablesJob(SchedulerJob):
 
 
 if __name__ == '__main__':
-    job = MonitorTablesJob(run_now=True,
-                           interval=TimeConstants.A_DAY,
-                           delay=TimeConstants.A_HOUR*2.75)
+    job = MonitorTablesDetailsJob(run_now=True,
+                                  interval=TimeConstants.A_DAY,
+                                  delay=MonitorConstants.DELAY)
     job.run()

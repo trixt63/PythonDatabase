@@ -25,15 +25,3 @@ class TableStats(Base):
     tuples_inserted_since_vacuum = Column(Integer)
     table_size = Column(Integer)
     index_size = Column(Integer)
-
-
-class Dog:
-    def __init(self, name):
-        __name__ = name
-
-    n_legs = 4
-
-
-if __name__ == '__main__':
-    new_dog = Dog('Maika')
-    print(new_dog.n_legs)

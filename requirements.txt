@@ -10,3 +10,4 @@ pandas
 python-dotenv
 seaborn~=0.13.2
 plotly~=5.21.0
+ipykernel

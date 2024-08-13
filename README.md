@@ -11,3 +11,4 @@
 ## Jobs
 - To log sizes of tables by table names: ```python3 scripts/monitor_table_sizes.py```
 - To log sizes of tables by schema names: ```python3 scripts/monitor_schema_table_sizes.py```
+- To log sizes of specific tables (such as token_transfer): ```python3 scripts/monitor_table_detail_sizes.py```

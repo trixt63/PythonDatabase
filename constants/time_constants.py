@@ -6,3 +6,7 @@ class TimeConstants:
     DAYS_7 = 7 * A_DAY
     DAYS_30 = 30 * A_DAY
     A_YEAR = 365 * A_DAY
+
+
+class MonitorConstants:
+    DELAY = 3600 * 23
